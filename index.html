@@ -3,295 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RuangOTP - Verifikasi Cepat & Bersih</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>RuangOTP - Solusi Verifikasi Cepat</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <style>
-        /* --- CSS RESET & VARIABEL --- */
-        :root {
-            --bg-main: #F9FAFB;      /* Latar belakang utama (off-white) */
-            --bg-card: #FFFFFF;      /* Latar belakang kartu (pure white) */
-            --text-dark: #374151;    /* Teks utama (soft black) */
-            --text-muted: #6B7280;   /* Teks deskripsi (grey) */
-            --accent-color: #3B82F6; /* Warna aksen (soft blue) */
-            --accent-hover: #2563EB; /* Warna saat tombol di-hover */
-            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --border-radius: 12px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* --- UTILITY CLASSES --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 28px;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: white;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background-color: var(--bg-card);
-            color: var(--text-dark);
-            border: 1px solid #E5E7EB;
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-
-        .section-desc {
-            text-align: center;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 48px auto;
-        }
-
-        /* --- NAVBAR --- */
-        .navbar {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid #F3F4F6;
-            padding: 16px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-        }
-
-        .logo span {
-            color: var(--accent-color);
-        }
-
-        .nav-links a {
-            margin-left: 32px;
-            font-weight: 500;
-            color: var(--text-muted);
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent-color);
-        }
-
-        /* --- HERO SECTION --- */
-        .hero {
-            padding: 160px 0 100px 0;
-            /* Background gradient halus agar tidak terlalu flat */
-            background: linear-gradient(180deg, #FFFFFF 0%, var(--bg-main) 100%);
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 24px;
-            color: var(--text-dark);
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 auto 40px auto;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-        }
-
-        /* --- FEATURES SECTION --- */
-        .features {
-            padding: 100px 0;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-        }
-
-        .feature-card {
-            background-color: var(--bg-card);
-            padding: 40px;
-            border-radius: 24px; /* Sudut lebih bulat */
-            box-shadow: var(--shadow-soft);
-            transition: transform 0.3s ease;
-            border: 1px solid transparent;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: #E5E7EB;
-        }
-
-        .icon-box {
-            width: 60px;
-            height: 60px;
-            background-color: #EFF6FF; /* Biru sangat muda */
-            color: var(--accent-color);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-            font-size: 24px;
-        }
-
-        .feature-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 12px;
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            background-color: var(--bg-card);
-            padding: 60px 0;
-            border-top: 1px solid #F3F4F6;
-            text-align: center;
-            color: var(--text-muted);
-        }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .nav-links { display: none; } /* Sederhanakan untuk mobile */
-            .hero-buttons { flex-direction: column; }
-            .btn { width: 100%; text-align: center; }
-        }
-    </style>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="container nav-container">
-            <div class="logo">
-                Ruang<span>OTP</span>.
-            </div>
-            <div class="nav-links">
-                <a href="#features">Fitur</a>
-                <a href="#pricing">Harga</a>
-                <a href="#login" style="color: var(--accent-color); font-weight: 600;">Login</a>
-            </div>
-        </div>
+        <div class="logo">RuangOTP</div>
+        <button class="btn-login-trigger" onclick="openModal()">Login / Register</button>
     </nav>
 
     <header class="hero">
-        <div class="container">
-            <h1>Solusi Verifikasi Digital<br>Yang Bersih & Cepat.</h1>
-            <p>
-                Dapatkan nomor virtual untuk ribuan layanan dalam hitungan detik. 
-                Privasi terjaga dengan tampilan yang memanjakan mata.
+        <div class="hero-content">
+            <h1>Layanan Verifikasi Digital <span class="highlight">Tercepat & Aman</span></h1>
+            <p class="hero-desc">
+                RuangOTP adalah platform penyedia nomor virtual otomatis untuk verifikasi ribuan aplikasi. 
+                Nikmati privasi terjaga, harga kompetitif, dan server stabil 24/7. 
+                Solusi terbaik untuk kebutuhan OTP Anda tanpa menggunakan nomor pribadi.
             </p>
-            <div class="hero-buttons">
-                <a href="#" class="btn btn-primary">Mulai Sekarang &rarr;</a>
-                <a href="#" class="btn btn-secondary">Pelajari Cara Kerja</a>
-            </div>
+            <button class="btn-cta" onclick="openModal()">Mulai Sekarang</button>
         </div>
     </header>
 
-    <section class="features" id="features">
-        <div class="container">
-            <h2 class="section-title">Mengapa Memilih Kami?</h2>
-            <p class="section-desc">Kami mengutamakan kecepatan, privasi, dan kenyamanan penggunaan Anda dengan desain yang modern.</p>
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="icon-box">
-                        ⚡
-                    </div>
-                    <h3>Aktivasi Instan</h3>
-                    <p>Tidak perlu menunggu lama. Nomor virtual siap digunakan dalam hitungan detik setelah pemesanan.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon-box">
-                        🛡️
-                    </div>
-                    <h3>Privasi Terjamin</h3>
-                    <p>Gunakan layanan kami tanpa perlu mengungkapkan nomor pribadi Anda. Data Anda aman bersama kami.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon-box">
-                        💎
-                    </div>
-                    <h3>Desain Clean UI</h3>
-                    <p>Antarmuka yang bersih, putih, dan modern membuat pengalaman verifikasi Anda lebih menyenangkan.</p>
-                </div>
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>PANEL AKSES</h2>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
             </div>
-        </div>
-    </section>
 
-    <footer>
-        <div class="container">
-            <div class="logo" style="justify-content: center; margin-bottom: 16px;">
-                Ruang<span>OTP</span>.
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">LOGIN</button>
+                <button class="tab-btn" onclick="switchTab('register')">REGISTER</button>
+                <button class="tab-btn" onclick="switchTab('update')">UPDATE</button>
             </div>
-            <p>© 2024 RuangOTP Clean Version. All rights reserved.</p>
-        </div>
-    </footer>
 
+            <form id="form-login" class="auth-form active-form">
+                <label>Email Akun</label>
+                <input type="email" placeholder="anda@mail.com" required>
+                
+                <label>Password</label>
+                <input type="password" placeholder="Password" required>
+
+                <button type="submit" class="btn-submit">LANJUTKAN</button>
+            </form>
+
+            <form id="form-register" class="auth-form">
+                <label>Nama Lengkap</label>
+                <input type="text" placeholder="Nama Anda" required>
+                
+                <label>Email Baru</label>
+                <input type="email" placeholder="anda@mail.com" required>
+                
+                <label>Buat Password</label>
+                <input type="password" placeholder="Password Kuat" required>
+
+                <br>
+                <div class="g-recaptcha" data-sitekey="6LeLHjssAAAAAM2UyWuNNVQeEzlK0hMm54JzswL7"></div>
+                <br>
+
+                <button type="submit" class="btn-submit">DAFTAR SEKARANG</button>
+            </form>
+
+            <div id="form-update" class="auth-form">
+                <p style="text-align: center; color: #aaa; margin-top: 20px;">
+                    Fitur Update sedang dalam pemeliharaan sistem.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="assets/js/app.js"></script>
 </body>
 </html>
