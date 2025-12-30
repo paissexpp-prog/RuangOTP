@@ -4,57 +4,6 @@ const modal = document.getElementById('authModal');
 const tabButtons = document.querySelectorAll('.tab-btn');
 const forms = document.querySelectorAll('.auth-form');
 
-// --- THEME SWITCHER LOGIC (BARU) ---
-const themeMenu = document.getElementById('theme-menu');
-const themeIcon = document.getElementById('theme-icon-active');
-
-function toggleThemeMenu() {
-    themeMenu.classList.toggle('active');
-}
-
-// Tutup menu tema jika klik di luar
-window.addEventListener('click', function(e) {
-    if (!e.target.closest('.theme-dropdown')) {
-        themeMenu.classList.remove('active');
-    }
-});
-
-function setTheme(theme) {
-    const html = document.documentElement;
-    
-    // Simpan pilihan ke memori browser
-    localStorage.setItem('theme', theme);
-
-    if (theme === 'dark') {
-        html.setAttribute('data-theme', 'dark');
-        themeIcon.className = 'ph ph-moon'; // Ikon Bulan
-    } else if (theme === 'light') {
-        html.removeAttribute('data-theme');
-        themeIcon.className = 'ph ph-sun'; // Ikon Matahari
-    } else if (theme === 'system') {
-        // Cek settingan komputer user
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            html.setAttribute('data-theme', 'dark');
-            themeIcon.className = 'ph ph-desktop'; // Ikon Komputer
-        } else {
-            html.removeAttribute('data-theme');
-            themeIcon.className = 'ph ph-desktop';
-        }
-    }
-    
-    // Tutup menu setelah memilih
-    themeMenu.classList.remove('active');
-}
-
-// Cek tema saat pertama kali buka web
-(function() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-})();
-
-
-// --- MODAL & FORM LOGIC (SAMA SEPERTI SEBELUMNYA) ---
-
 function openModal() {
     modal.classList.add('show');
 }
@@ -81,9 +30,13 @@ function switchTab(tabName) {
         document.querySelector('button[onclick="switchTab(\'register\')"]').classList.add('active');
         document.getElementById('form-register').classList.add('active-form');
     }
+    else if(tabName === 'update') {
+        document.querySelector('button[onclick="switchTab(\'update\')"]').classList.add('active');
+        document.getElementById('form-update').classList.add('active-form');
+    }
 }
 
-// LOGIN LOGIC
+// --- BAGIAN LOGIN (TIDAK BERUBAH) ---
 const loginForm = document.getElementById('form-login');
 
 if (loginForm) {
@@ -92,15 +45,6 @@ if (loginForm) {
 
         const emailInput = loginForm.querySelector('input[type="email"]').value;
         const passwordInput = loginForm.querySelector('input[type="password"]').value;
-        
-        // Captcha Index 0 (Login)
-        const recaptchaResponse = grecaptcha.getResponse(0);
-
-        if (recaptchaResponse.length === 0) {
-            alert("⚠️ Harap centang 'Saya bukan robot' di form Login!");
-            return;
-        }
-
         const btnSubmit = loginForm.querySelector('.btn-submit');
         const originalText = btnSubmit.innerText;
 
@@ -111,11 +55,7 @@ if (loginForm) {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    email: emailInput, 
-                    password: passwordInput,
-                    recaptchaToken: recaptchaResponse 
-                })
+                body: JSON.stringify({ email: emailInput, password: passwordInput })
             });
 
             const result = await response.json();
@@ -125,7 +65,6 @@ if (loginForm) {
                 window.location.href = result.redirectUrl;
             } else {
                 alert("Gagal: " + result.message);
-                grecaptcha.reset(0);
             }
         } catch (error) {
             console.error(error);
@@ -137,24 +76,27 @@ if (loginForm) {
     });
 }
 
-// REGISTER LOGIC
+// --- BAGIAN REGISTER (DENGAN ANTI-SPAM RECAPTCHA) ---
 const registerForm = document.getElementById('form-register');
 
 if (registerForm) {
     registerForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
+        // 1. Ambil Data Input
         const inputs = registerForm.querySelectorAll('input');
         const nameInput = inputs[0].value;
         const emailInput = inputs[1].value;
         const passwordInput = inputs[2].value;
         
-        // Captcha Index 1 (Register)
-        const recaptchaResponse = grecaptcha.getResponse(1);
+        // 2. AMBIL TOKEN CAPTCHA (BARU)
+        // grecaptcha adalah fungsi bawaan Google
+        const recaptchaResponse = grecaptcha.getResponse();
 
+        // 3. Cek: Kalau belum dicentang, tolak!
         if (recaptchaResponse.length === 0) {
-            alert("⚠️ Harap centang 'Saya bukan robot' di form Register!");
-            return;
+            alert("❌ Harap centang 'Saya bukan robot' terlebih dahulu!");
+            return; // Berhenti di sini
         }
 
         const btnSubmit = registerForm.querySelector('.btn-submit');
@@ -164,6 +106,7 @@ if (registerForm) {
         btnSubmit.disabled = true;
 
         try {
+            // 4. Kirim Data + Token Captcha ke Server
             const response = await fetch(`${API_URL}/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -171,7 +114,7 @@ if (registerForm) {
                     name: nameInput, 
                     email: emailInput, 
                     password: passwordInput,
-                    recaptchaToken: recaptchaResponse
+                    recaptchaToken: recaptchaResponse // Ini kuncinya
                 })
             });
 
@@ -180,13 +123,17 @@ if (registerForm) {
             if (result.status === 'success') {
                 alert("✅ Pendaftaran Berhasil! Silakan Login.");
                 switchTab('login');
-                grecaptcha.reset(1); 
+                
+                // Reset Captcha biar bersih
+                grecaptcha.reset(); 
+                
                 if(loginForm.querySelector('input[type="email"]')) {
                     loginForm.querySelector('input[type="email"]').value = emailInput;
                 }
             } else {
                 alert("❌ Gagal Daftar: " + result.message);
-                grecaptcha.reset(1);
+                // Reset Captcha jika gagal, biar user bisa coba lagi tanpa refresh
+                grecaptcha.reset();
             }
 
         } catch (error) {
