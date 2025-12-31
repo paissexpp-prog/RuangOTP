@@ -1,14 +1,14 @@
-import Navbar from './Navbar';
+import Navbar from './Navbar'; // Navbar atas
 import BottomNav from './BottomNav'; // <--- Import ini
-
 
 export default function Layout({ children }) {
   return (
-    <>
+    <div className="bg-gray-50 min-h-screen pb-20"> {/* Tambah padding bawah (pb-20) biar konten gak ketutup menu */}
       <Navbar />
-      <div className="min-h-screen pt-20 pb-10 px-4 max-w-7xl mx-auto">
+      <main className="container mx-auto p-4">
         {children}
-      </div>
-    </>
+      </main>
+      <BottomNav /> {/* <--- Pasang disini */}
+    </div>
   );
 }
