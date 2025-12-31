@@ -1,4 +1,6 @@
 import Navbar from './Navbar';
+import BottomNav from './BottomNav'; // <--- Import ini
+
 
 export default function Layout({ children }) {
   return (
